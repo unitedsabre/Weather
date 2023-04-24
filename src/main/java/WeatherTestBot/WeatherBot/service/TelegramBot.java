@@ -28,12 +28,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.config = config;
         List<BotCommand> listOfCommands = new ArrayList<>();
         listOfCommands.add(new BotCommand("/start", "get a welcome message"));
+        listOfCommands.add(new BotCommand("/parser", "get a parsing weather"));
         listOfCommands.add(new BotCommand("/weather", "get a weather forecast"));
         listOfCommands.add(new BotCommand("/help", "get a explanation of the bot"));
-        listOfCommands.add(new BotCommand("/parser", "get a parsing weather"));
         try {
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
-        } catch (TelegramApiException e) {
+        } catch (TelegramApiException ignored) {
         }
     }
     @Override
@@ -60,167 +60,16 @@ public class TelegramBot extends TelegramLongPollingBot {
                     sendMessage(chatId, HELP_TEXT);
                     break;
                 case "/parser":
-                    //Получение кода страницы
-                    String url = "https://www.gismeteo.ru/weather-pervouralsk-11325/weekly/";
-                    Document doc = null;
                     try {
-                        doc = Jsoup.parse(new URL(url), 30000);
+                        parser();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-
-                    File file = new File("src/main/java/parser/weather.txt");
-                    FileWriter writer = null;
-                    try {
-                        writer = new FileWriter(file);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    //Получение необходимых данных
-                    Element tableWth = doc.select("div[class=widget-items]").first();
-                    Elements table = doc.select("div[class=widget-items]");
-
-                    //Получение дня недели и числа
-                    Elements day = tableWth.select("div[class=widget-row widget-row-days-date]");
-                    for (Element d : day) {
-                        String dy = d.select("div[class=day]").text();
-                        String dt = d.select("div[class=date]").text();
-                        try {
-                            writer.write(dy + "\n");
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                        try {
-                            writer.write(dt);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                        try {
-                            writer.write("\n");
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-
-                    //Получение значения max и min температуры
-                    Elements TempTen = tableWth.select("div[data-row=temperature-air]");
-                    Elements temps = TempTen.select("div[class=values]");
-                    Elements maxt = temps.select("div[class=maxt]");
-                    Elements mint = temps.select("div[class=mint]");
-                    for (Element t : maxt) {
-                        String tMax = t.select("span[class=unit unit_temperature_c]").text();
-
-                        try {
-                            writer.write(tMax + " ");
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    //System.out.println();
-                    try {
-                        writer.write("\n");
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    //System.out.print("Минимальная температура: " + " ");
-                    for (Element tm : mint) {
-                        String tMin = tm.select("span[class=unit unit_temperature_c]").text();
-                        //System.out.print(tMin + " ");
-                        try {
-                            writer.write(tMin + " ");
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    //System.out.println();
-                    try {
-                        writer.write("\n");
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    //Получение значения скорости ветра
-                    Elements wind = table.select("div[data-row=wind-speed]");
-                    //System.out.print("Скорость ветра м,с:" + " ");
-                    for (Element windT : wind) {
-                        String winds = windT.select("span[class=wind-unit unit unit_wind_m_s]").text();
-                        //System.out.print(winds + " ");
-                        try {
-                            writer.write(winds);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    try {
-                        writer.write("\n");
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    //Получение значения направления ветра
-                    Elements windD = table.select("div[data-row=wind-direction]");
-                    for (Element wd : windD) {
-                        String windDirection = windD.select("div[class=direction]").text();
-                        //System.out.print(windDirection + " ");
-                        try {
-                            writer.write(windDirection);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    //System.out.println();
-                    try {
-                        writer.write("\n");
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    //Получение значения max и min давления
-                    //System.out.print("Максимальное давление: " + " ");
-                    Elements pressureTen = tableWth.select("div[data-row=pressure]");
-                    Elements pressure = pressureTen.select("div[class=value style_size_m]");
-                    Elements davlMax = pressure.select("div[class=maxt]");
-                    Elements davlMin = pressure.select("div[class=mint]");
-                    for (Element pressureMax : davlMax) {
-                        String prMax = pressureMax.select("span[class=unit unit_pressure_mm_hg_atm]").text();
-                        //System.out.print(prMax + " ");
-                        try {
-                            writer.write(prMax + " ");
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    //System.out.println();
-                    try {
-                        writer.write("\n");
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    //System.out.print("Минимальное давление: " + " ");
-                    for (Element pressureMin : davlMin) {
-                        String prMin = pressureMin.select("span[class=unit unit_pressure_mm_hg_atm]").text();
-                        //System.out.print(prMin + " ");
-                        try {
-                            writer.write(prMin + " ");
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    try {
-                        writer.close();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    //System.out.println("Парсинг прошёл успешно");
                     sendMessage(chatId, "Parsing success");
                     break;
-
                 case "/weather":
                     try {
-                        sendFromFile(chatId, messageText);
+                        sendFromFile(chatId);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -228,15 +77,14 @@ public class TelegramBot extends TelegramLongPollingBot {
                 default: sendMessage(chatId, "Sorry");
             }
         }
-
     }
     private void startCommandReceived(long chatId, String name) {
         String answer = "Hi, " + name + ", nice to see you!";
         sendMessage(chatId, answer);
     }
 
-    public void sendFromFile(long chatId, String fileName) throws IOException {
-        String fName = "src/main/java/parser/weather.txt";
+    public void sendFromFile(long chatId) throws IOException {
+        String fName = "src/main/java/WeatherTestBot/WeatherBot/weather.txt";
         StringBuilder sb = new StringBuilder();
         BufferedReader br = new BufferedReader(new FileReader(fName));
         String line = br.readLine();
@@ -256,8 +104,81 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         try {
             execute(message);
-        } catch (TelegramApiException e) {
-
+        } catch (TelegramApiException ignored) {
         }
+    }
+
+    private void parser() throws IOException {
+        String url = "https://www.gismeteo.ru/weather-pervouralsk-11325/weekly/";
+        Document doc = Jsoup.parse(new URL(url), 30000);
+        File file = new File("src/main/java/WeatherTestBot/WeatherBot/weather.txt");
+        FileWriter writer = new FileWriter(file);
+
+        //Получение необходимых данных
+        Element tableWth = doc.select("div[class=widget-items]").first();
+        Elements table = doc.select("div[class=widget-items]");
+
+        //Получение дня недели и числа
+        assert tableWth != null;
+        Elements day = tableWth.select("div[class=widget-row widget-row-days-date]");
+        for (Element d : day) {
+            String dy = d.select("div[class=day]").text();
+            String dt = d.select("div[class=date]").text();
+            writer.write(dy + "\n");
+            writer.write(dt);
+            writer.write("\n");
+        }
+
+        //Получение значения max и min температуры
+        Elements TempTen = tableWth.select("div[data-row=temperature-air]");
+        Elements temps = TempTen.select("div[class=values]");
+        Elements maxt = temps.select("div[class=maxt]");
+        Elements mint = temps.select("div[class=mint]");
+        for (Element t : maxt) {
+            String tMax = t.select("span[class=unit unit_temperature_c]").text();
+            writer.write(tMax + " ");
+        }
+        writer.write("\n");
+
+        for (Element tm : mint) {
+            String tMin = tm.select("span[class=unit unit_temperature_c]").text();
+            writer.write(tMin + " ");
+        }
+        writer.write("\n");
+
+        //Получение значения скорости ветра
+        Elements wind = table.select("div[data-row=wind-speed]");
+        for (Element windT : wind) {
+            String winds = windT.select("span[class=wind-unit unit unit_wind_m_s]").text();
+            writer.write(winds);
+        }
+        writer.write("\n");
+
+        //Получение значения направления ветра
+        Elements windD = table.select("div[data-row=wind-direction]");
+        for (Element ignored : windD) {
+            String windDirection = windD.select("div[class=direction]").text();
+            writer.write(windDirection);
+        }
+        writer.write("\n");
+
+        //Получение значения max и min давления
+        Elements pressureTen = tableWth.select("div[data-row=pressure]");
+        Elements pressure = pressureTen.select("div[class=value style_size_m]");
+        Elements davlMax = pressure.select("div[class=maxt]");
+        Elements davlMin = pressure.select("div[class=mint]");
+        for (Element pressureMax : davlMax) {
+            String prMax = pressureMax.select("span[class=unit unit_pressure_mm_hg_atm]").text();
+            writer.write(prMax + " ");
+        }
+        writer.write("\n");
+
+        //System.out.print("Минимальное давление: " + " ");
+        for (Element pressureMin : davlMin) {
+            String prMin = pressureMin.select("span[class=unit unit_pressure_mm_hg_atm]").text();
+            writer.write(prMin + " ");
+        }
+        writer.close();
+        System.out.println("Парсинг прошёл успешно");
     }
 }
