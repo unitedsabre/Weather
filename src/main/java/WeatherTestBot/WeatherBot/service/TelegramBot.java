@@ -179,6 +179,5 @@ public class TelegramBot extends TelegramLongPollingBot {
             writer.write(prMin + " ");
         }
         writer.close();
-        System.out.println("Парсинг прошёл успешно");
     }
 }
