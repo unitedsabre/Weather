@@ -124,9 +124,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         for (Element d : day) {
             String dy = d.select("div[class=day]").text();
             String dt = d.select("div[class=date]").text();
+            writer.write("Дата" + "\n");
             writer.write(dy + "\n");
             writer.write(dt);
-            writer.write("\n");
+            writer.write("\n" + "Максимальная и минимальная температура" + "\n");
         }
 
         //Получение значения max и min температуры
@@ -144,7 +145,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             String tMin = tm.select("span[class=unit unit_temperature_c]").text();
             writer.write(tMin + " ");
         }
-        writer.write("\n");
+        writer.write("\n" + "Скорость ветра и направление ветра" + "\n");
 
         //Получение значения скорости ветра
         Elements wind = table.select("div[data-row=wind-speed]");
@@ -160,7 +161,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             String windDirection = windD.select("div[class=direction]").text();
             writer.write(windDirection);
         }
-        writer.write("\n");
+        writer.write("\n" + "Максимальное и минимальное давление воздуха" + "\n");
 
         //Получение значения max и min давления
         Elements pressureTen = tableWth.select("div[data-row=pressure]");
@@ -173,7 +174,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         writer.write("\n");
 
-        //System.out.print("Минимальное давление: " + " ");
         for (Element pressureMin : davlMin) {
             String prMin = pressureMin.select("span[class=unit unit_pressure_mm_hg_atm]").text();
             writer.write(prMin + " ");
