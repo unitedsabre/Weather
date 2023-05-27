@@ -128,7 +128,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         //Получение необходимых данных
         Elements day = tableWth.select("div[class=widget-row widget-row-days-date]");
         Elements dd = day.select("div[class=date]");
-        i=-1;
+        i = -1;
         for (Element d : dd) {
             i++;
             String tmp = d.text();
@@ -136,7 +136,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
 
         dd = day.select("div[class=day]");
-        i=-1;
+        i = -1;
         for (Element d : dd) {
             i++;
             String tmp = d.text();
