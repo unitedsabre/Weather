@@ -113,19 +113,19 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void parser() throws IOException {
-        //Указания сайта для парсинга и указания файла в который будет записанны полученные данных
+        //Указания сайта и указания файла в который будет записанны полученные данных
         String url = "https://www.gismeteo.ru/weather-pervouralsk-11325/weekly/";
         Document doc = Jsoup.parse(new URL(url), 30000);
         File file = new File("src/main/java/WeatherTestBot/WeatherBot/weather.txt");
         FileWriter writer = new FileWriter(file);
-
+        //Создание массива для последующей записи в него полученных значений
         String[][] weather = new String[7][6];
         int i = -1;
 
         //Получение необходимых данных
         Element tableWth = doc.select("div[class=widget-items]").first();
 
-        //Получение необходимых данных
+        //Получение даты и дня недели
         Elements day = tableWth.select("div[class=widget-row widget-row-days-date]");
         Elements dd = day.select("div[class=date]");
         i = -1;
@@ -162,6 +162,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             weather[i][1] += " / "+ tMin;
         }
 
+        //Получение значения осадков
         Elements widget = tableWth.select("div[class=widget-row widget-row-icon]");
         Elements wD = widget.select("div[class=weather-icon tooltip]");
         i = -1;
@@ -210,6 +211,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             weather[i][5] += " / " + prMin;
         }
 
+        //Запись всех полученных значений в файл
         for (i = 0; i < 7; i++) {
             writer.write("Дата: " + weather[i][0] + "\n");
             writer.write("Температура, °C: " + weather[i][1] + "\n");
