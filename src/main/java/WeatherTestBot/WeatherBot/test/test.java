@@ -19,36 +19,36 @@ public class test {
         Document doc = Jsoup.parse(new URL(url), 30000);
         File file = new File("src/main/java/WeatherTestBot/WeatherBot/test/test.txt");
         FileWriter wr = new FileWriter(file);
+        String[][] weather = new String[7][8];
+        int i = -1;
 
         //Получение необходимых данных
         Element tableWth = doc.select("div[class=widget-items]").first();
-        int i = -1;
-        String[][] weather = new String[7][];
+
         //i++
         //weather[i][0] = dy;
 
         //Получение необходимых данных
         Elements day = tableWth.select("div[class=widget-row widget-row-days-date]");
 
-        //День и число
-        String dy1 = day.select("div[class=day]").text();
-        String dt1 = day.select("div[class=date]").text();
-        System.out.println(dy1);
-        System.out.println(dt1);
-
-        //Разбивание целой строчки на отдельные элементы
-        String[] elements = dy1.split(" ");
-        for (String element : elements) {
-            System.out.println(element);
+        //По элементно
+        Elements dd = day.select("div[class=date]");
+        i=-1;
+        for (Element d : dd) {
+            i++;
+            String tmp = d.text();
+            weather[i][0] = tmp;
         }
 
-        //Избавление от названия месяца в числах
-        String regex = "\\d+";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(dt1);
-        while (matcher.find()) {
-            System.out.println(matcher.group());
+        dd = day.select("div[class=day]");
+        i=-1;
+        for (Element d : dd) {
+            i++;
+            String tmp = d.text();
+            weather[i][0] += ", " + tmp;
         }
+
+        System.out.println(Arrays.deepToString(weather));
 
 
 
