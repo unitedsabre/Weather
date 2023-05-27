@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +32,7 @@ public class test {
         //Получение необходимых данных
         Element tableWth = doc.select("div[class=widget-items]").first();
         int i = -1;
-        String[][] weather = new String[7][2];
+        String[][] weather = new String[7][];
         //i++
         //weather[i][0] = dy;
 
@@ -42,69 +43,61 @@ public class test {
         //День
         Elements d1 = day.select("a[class=row-item item-day-6]");
         String dy1 = d1.select("div[class=day]").text();
-        System.out.println(dy1);
+        String dt1 = d1.select("div[class=date]").text();
+        String dat1 = getDate(dt1);
+        String dty1 = dat1 + " " + dy1;
+        weather[0][0] = dty1;
+        //System.out.println(dty1);
 
         Elements d2 = day.select("a[class=row-item item-day-7]");
         String dy2 = d2.select("div[class=day]").text();
-        System.out.println(dy2);
+        String dt2 = d2.select("div[class=date]").text();
+        String dat2 = getDate(dt2);
+        String dty2 = dat2 + " " + dy2;
+        weather[1][0] = dty2;
+        //System.out.println(dty2);
 
         Elements d3 = day.select("a[class=row-item item-day-1]");
         String dy3 = d3.select("div[class=day]").text();
-        System.out.println(dy3);
+        String dt3 = d3.select("div[class=date]").text();
+        String dat3 = getDate(dt3);
+        String dty3 = dat3 + " " + dy3;
+        weather[2][0] = dty3;
+        //System.out.println(dty3);
 
         Elements d4 = day.select("a[class=row-item item-day-2]");
         String dy4 = d4.select("div[class=day]").text();
-        System.out.println(dy4);
+        String dt4 = d4.select("div[class=date]").text();
+        String dat4 = getDate(dt4);
+        String dty4 = dat4 + " " + dy4;
+        weather[3][0] = dty4;
+        //System.out.println(dty4);
 
         Elements d5 = day.select("a[class=row-item item-day-3]");
         String dy5 = d5.select("div[class=day]").text();
-        System.out.println(dy5);
+        String dt5 = d5.select("div[class=date]").text();
+        String dat5 = getDate(dt5);
+        String dty5 = dat5 + " " + dy5;
+        weather[4][0] = dty5;
+        //System.out.println(dty5);
 
         Elements d6 = day.select("a[class=row-item item-day-4]");
         String dy6 = d6.select("div[class=day]").text();
-        System.out.println(dy6);
+        String dt6 = d6.select("div[class=date]").text();
+        String dat6 = getDate(dt6);
+        String dty6 = dat6 + " " + dy6;
+        weather[5][0] = dty6;
+        //.out.println(dty6);
 
         Elements d7 = day.select("a[class=row-item item-day-5]");
         String dy7 = d7.select("div[class=day]").text();
-        System.out.println(dy7);
-
-        //Дата
-        Elements dD1 = day.select("a[class=row-item item-day-6]");
-        String dt1 = dD1.select("div[class=date]").text();
-        String dat1 = getDate(dt1);
-        System.out.println(dat1);
-
-        Elements dD2 = day.select("a[class=row-item item-day-7]");
-        String dt2 = dD2.select("div[class=date]").text();
-        String dat2 = getDate(dt2);
-        System.out.println(dat2);
-
-        Elements dD3 = day.select("a[class=row-item item-day-1]");
-        String dt3 = dD3.select("div[class=date]").text();
-        String dat3 = getDate(dt3);
-        System.out.println(dat3);
-
-        Elements dD4 = day.select("a[class=row-item item-day-2]");
-        String dt4 = dD4.select("div[class=date]").text();
-        String dat4 = getDate(dt4);
-        System.out.println(dat4);
-
-        Elements dD5 = day.select("a[class=row-item item-day-3]");
-        String dt5 = dD5.select("div[class=date]").text();
-        String dat5 = getDate(dt5);
-        System.out.println(dat5);
-
-        Elements dD6 = day.select("a[class=row-item item-day-4]");
-        String dt6 = dD6.select("div[class=date]").text();
-        String dat6 = getDate(dt6);
-        System.out.println(dat6);
-
-        Elements dD7 = day.select("a[class=row-item item-day-5]");
-        String dt7 = dD7.select("div[class=date]").text();
+        String dt7 = d7.select("div[class=date]").text();
         String dat7 = getDate(dt7);
-        System.out.println(dat7);
+        String dty7 = dat7 + " " + dy7;
+        weather[6][0] = dty7;
+        //System.out.println(dty7);
 
-        //Получение дня недели и числа
+        System.out.println(Arrays.deepToString(weather));
 
 
         //По элементно
