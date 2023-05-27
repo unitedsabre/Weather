@@ -19,19 +19,15 @@ public class test {
         Document doc = Jsoup.parse(new URL(url), 30000);
         File file = new File("src/main/java/WeatherTestBot/WeatherBot/test/test.txt");
         FileWriter wr = new FileWriter(file);
-        String[][] weather = new String[7][8];
-        int i = -1;
 
         //Получение необходимых данных
         Element tableWth = doc.select("div[class=widget-items]").first();
+        int i = -1;
+        String[][] weather = new String[8][8];
 
-        //i++
-        //weather[i][0] = dy;
 
         //Получение необходимых данных
         Elements day = tableWth.select("div[class=widget-row widget-row-days-date]");
-
-        //По элементно
         Elements dd = day.select("div[class=date]");
         i=-1;
         for (Element d : dd) {
@@ -47,11 +43,6 @@ public class test {
             String tmp = d.text();
             weather[i][0] += ", " + tmp;
         }
-
-        System.out.println(Arrays.deepToString(weather));
-
-
-
         //По элементно
         Elements widget = tableWth.select("div[class=widget-row widget-row-icon]");
         Elements wD = widget.select("div[class=weather-icon tooltip]");
@@ -134,6 +125,7 @@ public class test {
         Elements davlMin = pressure.select("div[class=mint]");
         i = -1;
         for (Element pressureMax : davlMax) {
+            i++;
             String prMax = pressureMax.select("span[class=unit unit_pressure_mm_hg_atm]").text();
             weather[i][0] = prMax;
             //System.out.println(prMax);
@@ -148,7 +140,7 @@ public class test {
         //zap.write(prMin + " ");
         }
         //zap.close();
-        System.out.println(weather);
+        System.out.println(Arrays.deepToString(weather));
 
 }
 }
