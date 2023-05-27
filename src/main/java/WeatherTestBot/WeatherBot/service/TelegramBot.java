@@ -119,79 +119,105 @@ public class TelegramBot extends TelegramLongPollingBot {
         File file = new File("src/main/java/WeatherTestBot/WeatherBot/weather.txt");
         FileWriter writer = new FileWriter(file);
 
+        String[][] weather = new String[7][6];
+        int i = -1;
+
         //Получение необходимых данных
         Element tableWth = doc.select("div[class=widget-items]").first();
-        Elements table = doc.select("div[class=widget-items]");
 
-        //Получение дня недели и числа
+        //Получение необходимых данных
         Elements day = tableWth.select("div[class=widget-row widget-row-days-date]");
-        for (Element d : day) {
-            String dy = d.select("div[class=day]").text();
-            String dt = d.select("div[class=date]").text();
-            writer.write("День недели и число" + "\n");
-            writer.write(dy + "\n");
-            writer.write(dt);
+        Elements dd = day.select("div[class=date]");
+        i=-1;
+        for (Element d : dd) {
+            i++;
+            String tmp = d.text();
+            weather[i][0] = tmp;
         }
-        writer.write("\n" + "Осадки" + "\n");
 
-        Elements widget = tableWth.select("div[class=widget-row widget-row-icon]");
-        Elements wD = widget.select("div[class=weather-icon tooltip]");
-        for (Element w : wD) {
-            String wt = w.attributes().get("data-text");
-            writer.write(wt + "\n");
+        dd = day.select("div[class=day]");
+        i=-1;
+        for (Element d : dd) {
+            i++;
+            String tmp = d.text();
+            weather[i][0] += " " + tmp;
         }
-        writer.write("Максимальная" + "\n");
 
         //Получение значения max и min температуры
         Elements TempTen = tableWth.select("div[data-row=temperature-air]");
         Elements temps = TempTen.select("div[class=values]");
         Elements maxt = temps.select("div[class=maxt]");
         Elements mint = temps.select("div[class=mint]");
+        i = -1;
         for (Element t : maxt) {
+            i++;
             String tMax = t.select("span[class=unit unit_temperature_c]").text();
-            writer.write(tMax + " ");
+            weather[i][1] = tMax;
         }
-        writer.write("\n" + "Минимальная" + "\n");
 
+        i = -1;
         for (Element tm : mint) {
+            i++;
             String tMin = tm.select("span[class=unit unit_temperature_c]").text();
-            writer.write(tMin + " ");
+            weather[i][1] += " / "+ tMin;
         }
-        //writer.write("\n" + "Ветер" + "\n");
-        writer.write("\n" + "Скорость ветра, м/с" + "\n");
+
+        Elements widget = tableWth.select("div[class=widget-row widget-row-icon]");
+        Elements wD = widget.select("div[class=weather-icon tooltip]");
+        i = -1;
+        for (Element w : wD) {
+            i++;
+            String wt = w.attributes().get("data-text");
+            weather[i][2] = wt;
+        }
 
         //Получение значения скорости ветра
-        Elements wind = table.select("div[data-row=wind-speed]");
-        for (Element windT : wind) {
+        Elements wind = tableWth.select("div[data-row=wind-speed]");
+        Elements wid = wind.select("div[class=row-item]");
+        i = -1;
+        for (Element windT : wid) {
+            i++;
             String winds = windT.select("span[class=wind-unit unit unit_wind_m_s]").text();
-            writer.write(winds);
+            weather[i][3] = winds;
         }
-        writer.write("\n");
 
         //Получение значения направления ветра
-        Elements windD = table.select("div[data-row=wind-direction]");
-        for (Element ignored : windD) {
-            String windDirection = windD.select("div[class=direction]").text();
-            writer.write("Направление ветра" + "\n");
-            writer.write(windDirection);
+        Elements windD = tableWth.select("div[data-row=wind-direction]");
+        Elements winD = windD.select("div[class=row-item]");
+        i = -1;
+        for (Element windR : winD) {
+            i++;
+            String windDirection = windR.select("div[class=direction]").text();
+            weather[i][4] = windDirection;
         }
-        writer.write("\n" + "Давление, мм рт. ст." + "\n");
-        writer.write("Максимальное" + "\n");
 
         //Получение значения max и min давления
         Elements pressureTen = tableWth.select("div[data-row=pressure]");
         Elements pressure = pressureTen.select("div[class=value style_size_m]");
         Elements davlMax = pressure.select("div[class=maxt]");
         Elements davlMin = pressure.select("div[class=mint]");
+        i = -1;
         for (Element pressureMax : davlMax) {
+            i++;
             String prMax = pressureMax.select("span[class=unit unit_pressure_mm_hg_atm]").text();
-            writer.write(prMax + " ");
+            weather[i][5] = prMax;
         }
-        writer.write("\n" + "Минимальное" + "\n");
 
+        i = -1;
         for (Element pressureMin : davlMin) {
+            i++;
             String prMin = pressureMin.select("span[class=unit unit_pressure_mm_hg_atm]").text();
-            writer.write(prMin + " ");
+            weather[i][5] += " / " + prMin;
+        }
+
+        for (i = 0; i < 7; i++) {
+            writer.write("Дата: " + weather[i][0] + "\n");
+            writer.write("Температура, °C: " + weather[i][1] + "\n");
+            writer.write("Осадки: " + weather[i][2] + "\n");
+            writer.write("Скорость ветра, м/с: " + weather[i][3] + "\n");
+            writer.write("Направление ветра: " + weather[i][4] + "\n");
+            writer.write("Давление, мм рт. ст: " + weather[i][5] + "\n");
+            writer.write("\n");
         }
         writer.close();
     }
