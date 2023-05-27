@@ -19,12 +19,11 @@ public class test {
         Document doc = Jsoup.parse(new URL(url), 30000);
         File file = new File("src/main/java/WeatherTestBot/WeatherBot/test/test.txt");
         FileWriter wr = new FileWriter(file);
+        String[][] weather = new String[7][7];
+        int i = -1;
 
         //Получение необходимых данных
         Element tableWth = doc.select("div[class=widget-items]").first();
-        int i = -1;
-        String[][] weather = new String[8][8];
-
 
         //Получение необходимых данных
         Elements day = tableWth.select("div[class=widget-row widget-row-days-date]");
@@ -41,19 +40,10 @@ public class test {
         for (Element d : dd) {
             i++;
             String tmp = d.text();
-            weather[i][0] += ", " + tmp;
+            weather[i][0] += " " + tmp;
         }
         //По элементно
-        Elements widget = tableWth.select("div[class=widget-row widget-row-icon]");
-        Elements wD = widget.select("div[class=weather-icon tooltip]");
-        i = -1;
-        for (Element w : wD) {
-            i++;
-            String wt = w.attributes().get("data-text");
-            //System.out.println(wt);
-            weather[i][0] = wt;
-        //zap.write(wt + "\n");
-        }
+
         //zap.write("Максимальная" + "\n");
 
         //Получение значения max и min температуры
@@ -66,7 +56,7 @@ public class test {
         for (Element t : maxt) {
             i++;
             String tMax = t.select("span[class=unit unit_temperature_c]").text();
-            weather[i][0] = tMax;
+            weather[i][1] = tMax;
             //System.out.println(tMax);
         //zap.write(tMax + " ");
         }
@@ -77,11 +67,22 @@ public class test {
             i++;
             String tMin = tm.select("span[class=unit unit_temperature_c]").text();
             //System.out.println(tMin);
-            weather[i][0] = tMin;
+            weather[i][1] += " / "+ tMin;
         //zap.write(tMin + " ");
         }
         //writer.write("\n" + "Ветер" + "\n");
         //zap.write("\n" + "Скорость ветра, м/с" + "\n");
+
+        Elements widget = tableWth.select("div[class=widget-row widget-row-icon]");
+        Elements wD = widget.select("div[class=weather-icon tooltip]");
+        i = -1;
+        for (Element w : wD) {
+            i++;
+            String wt = w.attributes().get("data-text");
+            //System.out.println(wt);
+            weather[i][2] = wt;
+            //zap.write(wt + "\n");
+        }
 
 
 
@@ -93,7 +94,7 @@ public class test {
         for (Element windT : wid) {
             i++;
             String winds = windT.select("span[class=wind-unit unit unit_wind_m_s]").text();
-            weather[i][0] = winds;
+            weather[i][3] = winds;
             //System.out.println(winds);
             //zap.write(winds);
         }
@@ -108,7 +109,7 @@ public class test {
         for (Element windR : winD) {
             i++;
             String windDirection = windR.select("div[class=direction]").text();
-            weather[i][0] = windDirection;
+            weather[i][4] = windDirection;
             //System.out.println(windDirection);
         //zap.write("Направление ветра" + "\n");
         //zap.write(windDirection);
@@ -123,19 +124,22 @@ public class test {
         Elements pressure = pressureTen.select("div[class=value style_size_m]");
         Elements davlMax = pressure.select("div[class=maxt]");
         Elements davlMin = pressure.select("div[class=mint]");
+
         i = -1;
         for (Element pressureMax : davlMax) {
             i++;
             String prMax = pressureMax.select("span[class=unit unit_pressure_mm_hg_atm]").text();
-            weather[i][0] = prMax;
+            weather[i][5] = prMax;
             //System.out.println(prMax);
         //zap.write(prMax + " ");
         }
         //zap.write("\n" + "Минимальное" + "\n");
 
+        i = -1;
         for (Element pressureMin : davlMin) {
+            i++;
             String prMin = pressureMin.select("span[class=unit unit_pressure_mm_hg_atm]").text();
-            weather[i][0] = prMin;
+            weather[i][6] += " / " + prMin;
             //System.out.println(prMin);
         //zap.write(prMin + " ");
         }
