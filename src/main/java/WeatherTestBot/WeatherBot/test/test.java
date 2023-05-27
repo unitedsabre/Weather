@@ -104,10 +104,9 @@ public class test {
         Elements widget = tableWth.select("div[class=widget-row widget-row-icon]");
         Elements wD = widget.select("div[class=weather-icon tooltip]");
         for (Element w : wD) {
-            i++
+            i++;
             String wt = w.attributes().get("data-text");
             System.out.println(wt);
-            i++
             //weather[i][0] = dy;
         //zap.write(wt + "\n");
         }
