@@ -21,11 +21,10 @@ public class test {
     Element tableWth = doc.select("div[class=widget-items]").first();
     Elements table = doc.select("div[class=widget-items]");
 
-    String[][] weather = new String[8][7];
     int i = -1;
+    String[][] weather = new String[7][8];
 
         Elements day = tableWth.select("div[class=widget-row widget-row-days-date]");
-        i = -1;
         for (Element d : day) {
             i++;
             String dy = d.select("div[class=day]").text();
