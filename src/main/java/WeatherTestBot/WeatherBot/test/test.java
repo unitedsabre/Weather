@@ -25,6 +25,7 @@ public class test {
     int i = -1;
 
         Elements day = tableWth.select("div[class=widget-row widget-row-days-date]");
+        i = -1;
         for (Element d : day) {
             i++;
             String dy = d.select("div[class=day]").text();
@@ -34,10 +35,11 @@ public class test {
 
         Elements widget = tableWth.select("div[class=widget-row widget-row-icon]");
         Elements wD = widget.select("div[class=weather-icon tooltip]");
+        i = -1;
         for (Element w : wD) {
             i++;
             String wt = w.attributes().get("data-text");
-            weather[i][0] = wt + ", ";
+            weather[i][0] = wt;
         }
 
         //Получение значения max и min температуры
@@ -45,31 +47,35 @@ public class test {
         Elements temps = TempTen.select("div[class=values]");
         Elements maxt = temps.select("div[class=maxt]");
         Elements mint = temps.select("div[class=mint]");
+        i = -1;
         for (Element t : maxt) {
             i++;
             String tMax = t.select("span[class=unit unit_temperature_c]").text();
-            weather[i][0] = tMax + ", ";
+            weather[i][0] = tMax;
         }
+        i = -1;
         for (Element tm : mint) {
             i++;
             String tMin = tm.select("span[class=unit unit_temperature_c]").text();
-            weather[i][0] = tMin + ", ";
+            weather[i][0] = tMin;
 
         }
         //Получение значения скорости ветра
         Elements wind = table.select("div[data-row=wind-speed]");
+        i = -1;
         for (Element windT : wind) {
             i++;
             String winds = windT.select("span[class=wind-unit unit unit_wind_m_s]").text();
-            weather[i][0] = winds + ", ";
+            weather[i][0] = winds;
 
         }
         //Получение значения направления ветра
         Elements windD = table.select("div[data-row=wind-direction]");
+        i = -1;
         for (Element ignored : windD) {
             i++;
             String windDirection = windD.select("div[class=direction]").text();
-            weather[i][0] = windDirection + ", ";
+            weather[i][0] = windDirection;
         }
 
 
@@ -78,17 +84,18 @@ public class test {
         Elements pressure = pressureTen.select("div[class=value style_size_m]");
         Elements davlMax = pressure.select("div[class=maxt]");
         Elements davlMin = pressure.select("div[class=mint]");
+        i = -1;
         for (Element pressureMax : davlMax) {
             i++;
             String prMax = pressureMax.select("span[class=unit unit_pressure_mm_hg_atm]").text();
-            weather[i][0] = prMax + ", ";
+            weather[i][0] = prMax;
         }
 
-
+        i = -1;
         for (Element pressureMin : davlMin) {
             i++;
             String prMin = pressureMin.select("span[class=unit unit_pressure_mm_hg_atm]").text();
-            weather[i][0] = prMin + ", ";
+            weather[i][0] = prMin;
         }
         wr.close();
         System.out.println(weather);
